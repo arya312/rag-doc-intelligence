@@ -13,25 +13,10 @@ Upload a PDF → the system chunks and embeds it → ask any question → get an
 
 ---
 
-## Architecture
-React Frontend
-↕ HTTP
-FastAPI Backend
-↕
-┌────────────┐     ┌─────────────┐
-│  ChromaDB  │     │   Claude    │
-│  (vectors) │     │ (Anthropic) │
-└────────────┘     └─────────────┘
-↕
-Evaluation Layer
-(hallucination detection + retrieval scoring)
-
----
-
 ## Tech Stack
 
 | Layer | Technology |
-|---|---|
+|-------|------------|
 | LLM | Claude (Anthropic) |
 | Embeddings | sentence-transformers (all-MiniLM-L6-v2) |
 | Vector DB | ChromaDB |
@@ -91,20 +76,6 @@ cd frontend && npm install && npm start
 ```
 
 Visit `http://localhost:3000/app` for the UI or `http://localhost:8000/docs` for the API.
-
----
-
-## Project structure
-rag-doc-intelligence/
-├── main.py              # FastAPI backend
-├── ingest.py            # PDF ingestion pipeline
-├── rag_query.py         # Interactive query CLI
-├── evaluate.py          # Hallucination + retrieval evaluation
-├── dashboard.py         # Evaluation dashboard generator
-├── requirements.txt
-└── frontend/
-└── src/
-└── App.tsx      # React chat UI
 
 ---
 
