@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 import os
 import chromadb
 from fastapi import FastAPI, UploadFile, File, HTTPException
@@ -128,7 +131,7 @@ Question: {request.question}"""
     )
 
 
-# Serve React frontend (add this at the very end)
+# Serve React frontend
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import os as _os
@@ -139,4 +142,8 @@ if _os.path.exists(_frontend_build):
 
     @app.get("/app")
     def serve_frontend():
+        return FileResponse(f"{_frontend_build}/index.html")
+
+    @app.get("/")
+    def serve_root():
         return FileResponse(f"{_frontend_build}/index.html")
