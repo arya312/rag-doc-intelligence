@@ -81,5 +81,5 @@ Visit `http://localhost:3000/app` for the UI or `http://localhost:8000/docs` for
 
 ## Built by
 
-Arya — actively looking for SDE-II / ML Engineer roles in London and across Europe.  
+Arya  
 [GitHub](https://github.com/arya312) · [LinkedIn](https://linkedin.com/in/your-profile)
