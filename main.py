@@ -2,23 +2,16 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import os
+import threading
 import chromadb
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 import anthropic
-from langchain_huggingface import HuggingFaceEmbeddings
-from ingest import ingest_pdf
-import tempfile
-import shutil
-from dotenv import load_dotenv
-load_dotenv()
 
 app = FastAPI(title="RAG Doc Intelligence API")
 
-# Allow frontend to talk to backend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -26,18 +19,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load shared resources once at startup (not on every request)
-import threading
+@app.get("/health")
+def health():
+    return {"status": "ok", "ready": embedder is not None}
 
+# These load in background AFTER server starts
 embedder = None
+chroma_client = None
+claude = None
 
-def load_models():
-    global embedder
-    print("Loading embedding model...")
+def load_resources():
+    global embedder, chroma_client, claude
+    from langchain_huggingface import HuggingFaceEmbeddings
+    chroma_path = os.environ.get("CHROMA_PATH", "./chroma_db")
+    chroma_client = chromadb.PersistentClient(path=chroma_path)
+    claude = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
     embedder = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-    print("Ready!")
+    print("All resources loaded!")
 
-threading.Thread(target=load_models, daemon=True).start()
+threading.Thread(target=load_resources, daemon=True).start()
+
 chroma_client = chromadb.PersistentClient(path="./chroma_db")
 claude = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 print("Ready!")
