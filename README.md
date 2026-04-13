@@ -82,4 +82,4 @@ Visit `http://localhost:3000/app` for the UI or `http://localhost:8000/docs` for
 ## Built by
 
 Arya  
-[GitHub](https://github.com/arya312) · [LinkedIn](https://linkedin.com/in/your-profile)
+[GitHub](https://github.com/arya312) · [LinkedIn](https://linkedin.com/in/aryapandey1)
