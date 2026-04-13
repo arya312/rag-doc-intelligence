@@ -10,6 +10,8 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from ingest import ingest_pdf
 import tempfile
 import shutil
+from dotenv import load_dotenv
+load_dotenv()
 
 app = FastAPI(title="RAG Doc Intelligence API")
 

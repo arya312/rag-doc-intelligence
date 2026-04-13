@@ -1,0 +1,111 @@
+{
+  "collection": "sample",
+  "total_questions": 5,
+  "grounded": 5,
+  "partial": 0,
+  "hallucinated": 0,
+  "avg_hallucination_score": 0.75,
+  "avg_retrieval_score": 0.499,
+  "results": [
+    {
+      "question": "What is the attention mechanism?",
+      "answer": "Based on the document, the attention mechanism can be described as mapping a query and a set of key-value pairs to an output, where the query, keys, values, and output are all vectors. The output is computed as a weighted sum.\n\nThe document also shows that attention mechanisms can follow long-distance dependencies, as demonstrated in the example where attention heads attend to a distant dependency of the verb 'making', completing the phrase 'making...more difficult'.",
+      "pages": [
+        2,
+        12,
+        4
+      ],
+      "hallucination": {
+        "max_similarity": 0.836,
+        "avg_similarity": 0.68,
+        "verdict": "GROUNDED",
+        "color": "green"
+      },
+      "retrieval": {
+        "avg_relevance": 0.569,
+        "max_relevance": 0.621,
+        "quality": "GOOD"
+      }
+    },
+    {
+      "question": "How long did training take?",
+      "answer": "Based on the document, training time varied by model size:\n\n- **Base models**: Trained for 100,000 steps or 12 hours (with each training step taking about 0.4 seconds)\n- **Big models**: Trained for 300,000 steps or 3.5 days (with each training step taking 1.0 seconds)",
+      "pages": [
+        6,
+        6,
+        5
+      ],
+      "hallucination": {
+        "max_similarity": 0.538,
+        "avg_similarity": 0.455,
+        "verdict": "GROUNDED",
+        "color": "green"
+      },
+      "retrieval": {
+        "avg_relevance": 0.264,
+        "max_relevance": 0.3,
+        "quality": "FAIR"
+      }
+    },
+    {
+      "question": "What BLEU score did the Transformer achieve?",
+      "answer": "Based on the document, the Transformer achieved different BLEU scores depending on the model variant and translation task:\n\n**For English-to-German translation:**\n- Transformer (base model): 27.3 BLEU\n- Transformer (big): 28.4 BLEU\n\n**For English-to-French translation:**\n- Transformer (base model): 38.1 BLEU  \n- Transformer (big): 41.8 BLEU (though the text also mentions 41.0 BLEU for the big model on this task)\n\nThe document notes that the big transformer model established a new state-of-the-art BLEU score of 28.4 for English-to-German translation, outperforming previously reported models by more than 2.0 BLEU points.",
+      "pages": [
+        7,
+        7,
+        8
+      ],
+      "hallucination": {
+        "max_similarity": 0.82,
+        "avg_similarity": 0.698,
+        "verdict": "GROUNDED",
+        "color": "green"
+      },
+      "retrieval": {
+        "avg_relevance": 0.519,
+        "max_relevance": 0.6,
+        "quality": "GOOD"
+      }
+    },
+    {
+      "question": "What are the limitations of recurrent neural networks?",
+      "answer": "Based on the document, recurrent neural networks have several key limitations:\n\n1. **Sequential computation constraint**: RNNs have an \"inherently sequential nature\" that \"precludes parallelization within training examples.\" They must process sequences step-by-step, generating hidden states one at a time based on the previous hidden state.\n\n2. **Scalability issues with longer sequences**: This sequential processing \"becomes critical at longer sequence lengths, as memory constraints limit batching across examples.\"\n\n3. **Fundamental computational bottleneck**: Even though recent work has achieved improvements through \"factorization tricks and conditional computation,\" the document notes that \"the fundamental constraint of sequential computation, however, remains.\"\n\nThese limitations essentially mean that RNNs cannot take advantage of parallel processing capabilities of modern hardware, making them slower and less efficient, especially when dealing with long sequences.",
+      "pages": [
+        1,
+        5,
+        1
+      ],
+      "hallucination": {
+        "max_similarity": 0.686,
+        "avg_similarity": 0.637,
+        "verdict": "GROUNDED",
+        "color": "green"
+      },
+      "retrieval": {
+        "avg_relevance": 0.587,
+        "max_relevance": 0.602,
+        "quality": "GOOD"
+      }
+    },
+    {
+      "question": "What is multi-head attention?",
+      "answer": "Based on the document, multi-head attention is a mechanism that allows a model to jointly attend to information from different representation subspaces at different positions. \n\nThe key characteristics of multi-head attention are:\n\n1. **Multiple parallel attention heads**: It uses multiple attention layers (heads) running in parallel - in this work, they use h = 8 parallel attention heads.\n\n2. **Different projections**: Each head uses different parameter matrices (W^Q_i, W^K_i, W^V_i) to project the queries, keys, and values.\n\n3. **Concatenation and final projection**: The outputs from all heads are concatenated and then projected through a final weight matrix W^O to produce the final output.\n\n4. **Reduced dimensionality per head**: Each head operates on a smaller dimension (dk = dv = dmodel/h = 64), so the total computational cost remains similar to single-head attention with full dimensionality.\n\nThe mathematical formulation given is:\nMultiHead(Q, K, V) = Concat(head\u2081, ..., head\u2095)W^O\nwhere head\u1d62 = Attention(QW^Q_i, KW^K_i, VW^V_i)\n\nThe advantage over single-head attention is that averaging in single-head attention inhibits the ability to attend to information from different representation subspaces, while multi-head attention overcomes this limitation.",
+      "pages": [
+        2,
+        4,
+        4
+      ],
+      "hallucination": {
+        "max_similarity": 0.871,
+        "avg_similarity": 0.641,
+        "verdict": "GROUNDED",
+        "color": "green"
+      },
+      "retrieval": {
+        "avg_relevance": 0.554,
+        "max_relevance": 0.595,
+        "quality": "GOOD"
+      }
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RAG Evaluation Dashboard</title>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 1000px; margin: 0 auto; padding: 2rem; background: #f9f9f9; }
+        h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
+        .subtitle { color: #666; margin-bottom: 2rem; }
+        .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 2rem; }
+        .card { background: white; border-radius: 12px; padding: 1.25rem; border: 1px solid #eee; }
+        .card-label { font-size: 12px; color: #999; margin-bottom: 4px; }
+        .card-value { font-size: 28px; font-weight: 600; }
+        .card-sub { font-size: 12px; color: #666; margin-top: 4px; }
+        table { width: 100%; background: white; border-radius: 12px; border-collapse: collapse; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        th { padding: 12px; background: #f4f4f4; text-align: left; font-size: 13px; color: #666; font-weight: 500; }
+        tr:hover { background: #fafafa; }
+        .bar { height: 8px; border-radius: 4px; background: #eee; margin-top: 6px; }
+        .bar-fill { height: 100%; border-radius: 4px; background: #0066cc; }
+    </style>
+</head>
+<body>
+    <h1>RAG Evaluation Dashboard</h1>
+    <p class="subtitle">Collection: <strong>sample</strong> &nbsp;|&nbsp; 5 questions evaluated</p>
+
+    <div class="cards">
+        <div class="card">
+            <div class="card-label">Grounded answers</div>
+            <div class="card-value" style="color:#2a7a2a">5/5</div>
+            <div class="bar"><div class="bar-fill" style="width:100%;background:#2a7a2a"></div></div>
+            <div class="card-sub">100% of answers</div>
+        </div>
+        <div class="card">
+            <div class="card-label">Hallucinated</div>
+            <div class="card-value" style="color:#2a7a2a">0</div>
+            <div class="card-sub">None detected</div>
+        </div>
+        <div class="card">
+            <div class="card-label">Avg grounding score</div>
+            <div class="card-value">0.75</div>
+            <div class="bar"><div class="bar-fill" style="width:75%"></div></div>
+            <div class="card-sub">0.75+ is strong</div>
+        </div>
+        <div class="card">
+            <div class="card-label">Avg retrieval score</div>
+            <div class="card-value">0.499</div>
+            <div class="bar"><div class="bar-fill" style="width:50%"></div></div>
+            <div class="card-sub">0.4+ is good</div>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Question</th>
+                <th>Answer (preview)</th>
+                <th>Pages</th>
+                <th>Hallucination</th>
+                <th>Retrieval</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td style="padding:12px;border-bottom:1px solid #eee;max-width:200px">What is the attention mechanism?</td>
+            <td style="padding:12px;border-bottom:1px solid #eee;font-size:12px;color:#666">Based on the document, the attention mechanism can be described as mapping a query and a set of key-value pairs to an output, where the query, keys, values, and output are all vect...</td>
+            <td style="padding:12px;border-bottom:1px solid #eee;text-align:center">p.2, 12, 4</td>
+            <td style="padding:12px;border-bottom:1px solid #eee;text-align:center">
+                <span style="color:#2a7a2a;font-weight:600">GROUNDED</span>
+                <br><small style="color:#999">0.836</small>
+            </td>
+            <td style="padding:12px;border-bottom:1px solid #eee;text-align:center">
+                <span style="color:#2a7a2a;font-weight:600">GOOD</span>
+                <br><small style="color:#999">0.569</small>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding:12px;border-bottom:1px solid #eee;max-width:200px">How long did training take?</td>
+            <td style="padding:12px;border-bottom:1px solid #eee;font-size:12px;color:#666">Based on the document, training time varied by model size:
+
+- **Base models**: Trained for 100,000 steps or 12 hours (with each training step taking about 0.4 seconds)
+- **Big mode...</td>
+            <td style="padding:12px;border-bottom:1px solid #eee;text-align:center">p.6, 6, 5</td>
+            <td style="padding:12px;border-bottom:1px solid #eee;text-align:center">
+                <span style="color:#2a7a2a;font-weight:600">GROUNDED</span>
+                <br><small style="color:#999">0.538</small>
+            </td>
+            <td style="padding:12px;border-bottom:1px solid #eee;text-align:center">
+                <span style="color:#b87a00;font-weight:600">FAIR</span>
+                <br><small style="color:#999">0.264</small>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding:12px;border-bottom:1px solid #eee;max-width:200px">What BLEU score did the Transformer achieve?</td>
+            <td style="padding:12px;border-bottom:1px solid #eee;font-size:12px;color:#666">Based on the document, the Transformer achieved different BLEU scores depending on the model variant and translation task:
+
+**For English-to-German translation:**
+- Transformer (ba...</td>
+            <td style="padding:12px;border-bottom:1px solid #eee;text-align:center">p.7, 7, 8</td>
+            <td style="padding:12px;border-bottom:1px solid #eee;text-align:center">
+                <span style="color:#2a7a2a;font-weight:600">GROUNDED</span>
+                <br><small style="color:#999">0.82</small>
+            </td>
+            <td style="padding:12px;border-bottom:1px solid #eee;text-align:center">
+                <span style="color:#2a7a2a;font-weight:600">GOOD</span>
+                <br><small style="color:#999">0.519</small>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding:12px;border-bottom:1px solid #eee;max-width:200px">What are the limitations of recurrent neural networks?</td>
+            <td style="padding:12px;border-bottom:1px solid #eee;font-size:12px;color:#666">Based on the document, recurrent neural networks have several key limitations:
+
+1. **Sequential computation constraint**: RNNs have an "inherently sequential nature" that "preclude...</td>
+            <td style="padding:12px;border-bottom:1px solid #eee;text-align:center">p.1, 5, 1</td>
+            <td style="padding:12px;border-bottom:1px solid #eee;text-align:center">
+                <span style="color:#2a7a2a;font-weight:600">GROUNDED</span>
+                <br><small style="color:#999">0.686</small>
+            </td>
+            <td style="padding:12px;border-bottom:1px solid #eee;text-align:center">
+                <span style="color:#2a7a2a;font-weight:600">GOOD</span>
+                <br><small style="color:#999">0.587</small>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding:12px;border-bottom:1px solid #eee;max-width:200px">What is multi-head attention?</td>
+            <td style="padding:12px;border-bottom:1px solid #eee;font-size:12px;color:#666">Based on the document, multi-head attention is a mechanism that allows a model to jointly attend to information from different representation subspaces at different positions. 
+
+Th...</td>
+            <td style="padding:12px;border-bottom:1px solid #eee;text-align:center">p.2, 4, 4</td>
+            <td style="padding:12px;border-bottom:1px solid #eee;text-align:center">
+                <span style="color:#2a7a2a;font-weight:600">GROUNDED</span>
+                <br><small style="color:#999">0.871</small>
+            </td>
+            <td style="padding:12px;border-bottom:1px solid #eee;text-align:center">
+                <span style="color:#2a7a2a;font-weight:600">GOOD</span>
+                <br><small style="color:#999">0.554</small>
+            </td>
+        </tr></tbody>
+    </table>
+
+    <p style="font-size:12px;color:#bbb;text-align:center;margin-top:2rem">
+        RAG Doc Intelligence — github.com/arya312/rag-doc-intelligence
+    </p>
+</body>
+</html>
