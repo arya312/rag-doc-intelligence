@@ -2,12 +2,10 @@ services:
   - type: web
     name: rag-doc-intelligence
     runtime: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    buildCommand: pip install -r requirements.txt && python -c "from langchain_huggingface import HuggingFaceEmbeddings; HuggingFaceEmbeddings(model_name='all-MiniLM-L6-v2')"
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT --timeout-keep-alive 120
     envVars:
       - key: ANTHROPIC_API_KEY
         sync: false
-    disk:
-      name: chroma-data
-      mountPath: /data
-      sizeGB: 1
+      - key: CHROMA_PATH
+        value: /data/chroma_db

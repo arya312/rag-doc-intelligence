@@ -27,8 +27,17 @@ app.add_middleware(
 )
 
 # Load shared resources once at startup (not on every request)
-print("Loading embedding model...")
-embedder = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+import threading
+
+embedder = None
+
+def load_models():
+    global embedder
+    print("Loading embedding model...")
+    embedder = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    print("Ready!")
+
+threading.Thread(target=load_models, daemon=True).start()
 chroma_client = chromadb.PersistentClient(path="./chroma_db")
 claude = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 print("Ready!")
