@@ -2,8 +2,12 @@ services:
   - type: web
     name: rag-doc-intelligence
     runtime: python
-    buildCommand: pip install -r requirements.txt && python -c "from langchain_huggingface import HuggingFaceEmbeddings; HuggingFaceEmbeddings(model_name='all-MiniLM-L6-v2')"
-    startCommand: bash -lc 'python -m uvicorn main:app --host 0.0.0.0 --port $PORT --timeout-keep-alive 120'
+    buildCommand: |
+      pip install -r requirements.txt
+      cd frontend
+      npm install
+      npm run build
+    startCommand: bash -lc 'python -m uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000} --timeout-keep-alive 120'
     envVars:
       - key: ANTHROPIC_API_KEY
         sync: false
