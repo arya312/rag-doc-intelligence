@@ -186,7 +186,8 @@ if _os.path.exists(_frontend_build):
 if __name__ == "__main__":
     import uvicorn
 
-    port = int(os.environ.get("PORT", "8000"))
+    port = int(os.environ.get("PORT", 10000))  # Default to 10000 for Render
+    print(f"Starting server on port {port}")  # Add logging to confirm binding
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
