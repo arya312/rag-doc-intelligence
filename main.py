@@ -115,7 +115,10 @@ async def upload_pdf(file: UploadFile = File(...)):
         if not collection_name:
             collection_name = "default_collection"
         
-        ingest_pdf(tmp_path, collection_name=collection_name, chroma_client=chroma_client)
+        try:
+            ingest_pdf(tmp_path, collection_name=collection_name, chroma_client=chroma_client)
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
         return {
             "message": f"Successfully ingested '{file.filename}'",
             "collection_name": collection_name

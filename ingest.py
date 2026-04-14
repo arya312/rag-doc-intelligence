@@ -60,6 +60,9 @@ def ingest_pdf(pdf_path: str, collection_name: str = None, chroma_client=None):
     chunks = splitter.split_documents(pages)
     print(f"      Created {len(chunks)} chunks")
 
+    if not chunks:
+        raise ValueError("No text chunks extracted from PDF. The PDF may be image-based or contain no extractable text.")
+
     print("\n[3/4] Loading embedding model...")
     embedder = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     print("      Model ready")
