@@ -3,12 +3,15 @@ load_dotenv()
 
 import os
 import threading
+import tempfile
+import shutil
 import chromadb
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 import anthropic
+from ingest import ingest_pdf
 
 app = FastAPI(title="RAG Doc Intelligence API")
 
@@ -31,16 +34,34 @@ claude = None
 def load_resources():
     global embedder, chroma_client, claude
     from langchain_huggingface import HuggingFaceEmbeddings
-    chroma_path = os.environ.get("CHROMA_PATH", "./chroma_db")
-    chroma_client = chromadb.PersistentClient(path=chroma_path)
+    
+    # Use EphemeralClient for Render free tier (no persistent filesystem)
+    # For persistent storage, use environment variable ENABLE_PERSISTENT_CHROMA=true
+    use_persistent = os.environ.get("ENABLE_PERSISTENT_CHROMA", "false").lower() == "true"
+    
+    if use_persistent:
+        chroma_path = os.environ.get("CHROMA_PATH", "./chroma_db")
+        try:
+            # Ensure directory exists with proper permissions
+            os.makedirs(chroma_path, exist_ok=True)
+            chroma_client = chromadb.PersistentClient(path=chroma_path)
+            print(f"Using persistent ChromaDB at {chroma_path}")
+        except (OSError, PermissionError) as e:
+            print(f"Failed to initialize persistent ChromaDB: {e}")
+            print("Falling back to ephemeral (in-memory) ChromaDB")
+            chroma_client = chromadb.EphemeralClient()
+    else:
+        # Use in-memory ephemeral client for free tier / testing
+        chroma_client = chromadb.EphemeralClient()
+        print("Using ephemeral (in-memory) ChromaDB")
+    
     claude = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
     embedder = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     print("All resources loaded!")
 
 threading.Thread(target=load_resources, daemon=True).start()
 
-chroma_client = chromadb.PersistentClient(path="./chroma_db")
-claude = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+# Give load_resources thread time to initialize
 print("Ready!")
 
 
@@ -81,8 +102,11 @@ async def upload_pdf(file: UploadFile = File(...)):
         tmp_path = tmp.name
 
     try:
+        if chroma_client is None:
+            raise HTTPException(status_code=503, detail="ChromaDB not yet ready. Please try again in a moment.")
+        
         collection_name = file.filename.replace(".pdf", "").replace(" ", "_").lower()
-        ingest_pdf(tmp_path, collection_name=collection_name)
+        ingest_pdf(tmp_path, collection_name=collection_name, chroma_client=chroma_client)
         return {
             "message": f"Successfully ingested '{file.filename}'",
             "collection_name": collection_name

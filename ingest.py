@@ -9,9 +9,29 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 
-chroma_client = chromadb.PersistentClient(path="./chroma_db")
+# Initialize default client for standalone CLI usage
+_default_chroma_client = None
 
-def ingest_pdf(pdf_path: str, collection_name: str = None):
+def _get_default_client():
+    """Lazy initialize default client for CLI usage"""
+    global _default_chroma_client
+    if _default_chroma_client is None:
+        use_persistent = os.environ.get("ENABLE_PERSISTENT_CHROMA", "false").lower() == "true"
+        if use_persistent:
+            try:
+                os.makedirs("./chroma_db", exist_ok=True)
+                _default_chroma_client = chromadb.PersistentClient(path="./chroma_db")
+            except (OSError, PermissionError):
+                print("Warning: Failed to initialize persistent ChromaDB, using ephemeral")
+                _default_chroma_client = chromadb.EphemeralClient()
+        else:
+            _default_chroma_client = chromadb.EphemeralClient()
+    return _default_chroma_client
+
+def ingest_pdf(pdf_path: str, collection_name: str = None, chroma_client=None):
+    if chroma_client is None:
+        chroma_client = _get_default_client()
+    
     if not os.path.exists(pdf_path):
         print(f"Error: file not found: {pdf_path}")
         sys.exit(1)
