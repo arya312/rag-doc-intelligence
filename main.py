@@ -181,3 +181,15 @@ if _os.path.exists(_frontend_build):
     @app.get("/")
     def serve_root():
         return FileResponse(f"{_frontend_build}/index.html")
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    port = int(os.environ.get("PORT", "8000"))
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=port,
+        timeout_keep_alive=120,
+    )
