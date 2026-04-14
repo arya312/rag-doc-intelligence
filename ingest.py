@@ -28,7 +28,7 @@ def _get_default_client():
             _default_chroma_client = chromadb.EphemeralClient()
     return _default_chroma_client
 
-def ingest_pdf(pdf_path: str, collection_name: str = None, chroma_client=None):
+def ingest_pdf(pdf_path: str, collection_name: str = None, chroma_client=None, embedder=None):
     if chroma_client is None:
         chroma_client = _get_default_client()
     
@@ -64,7 +64,8 @@ def ingest_pdf(pdf_path: str, collection_name: str = None, chroma_client=None):
         raise ValueError("No text chunks extracted from PDF. The PDF may be image-based or contain no extractable text.")
 
     print("\n[3/4] Loading embedding model...")
-    embedder = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    if embedder is None:
+        embedder = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     print("      Model ready")
 
     print("\n[4/4] Embedding and storing in ChromaDB...")
