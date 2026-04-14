@@ -105,7 +105,16 @@ async def upload_pdf(file: UploadFile = File(...)):
         if chroma_client is None:
             raise HTTPException(status_code=503, detail="ChromaDB not yet ready. Please try again in a moment.")
         
-        collection_name = file.filename.replace(".pdf", "").replace(" ", "_").lower()
+        # Sanitize collection name: remove invalid chars, replace spaces with _, lowercase
+        import re
+        collection_name = re.sub(r'[^a-zA-Z0-9._-]', '', file.filename.replace(".pdf", "").replace(" ", "_")).lower()
+        # Ensure it starts/ends with alphanumeric
+        collection_name = re.sub(r'^[^a-zA-Z0-9]+', '', collection_name)
+        collection_name = re.sub(r'[^a-zA-Z0-9]+$', '', collection_name)
+        # Fallback if empty
+        if not collection_name:
+            collection_name = "default_collection"
+        
         ingest_pdf(tmp_path, collection_name=collection_name, chroma_client=chroma_client)
         return {
             "message": f"Successfully ingested '{file.filename}'",
